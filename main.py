@@ -1,22 +1,30 @@
+from enum import Enum
+
+class Char(Enum):
+    PLAYER_2 = 'X'
+    PLAYER_1 = 'O'
+    EMPTY = '_'
+
+
 class Game:
     def __init__(self):
-        self.game_array = [['_' for _ in range(3)] for _ in range(3)]
+        self.game_array = [[Char.EMPTY for _ in range(3)] for _ in range(3)]
         print('Welcome to Tic Tac Toe!')
         self.print_game()
-        self.current_player = 'O'
+        self.current_player = Char.PLAYER_1
         self.turns = 0
     
     def print_game(self):
-        line = [' | '.join(self.game_array[i]) for i in range(3)]
+        line = [' | '.join(self.game_array[i].value()) for i in range(3)]
         print('{' + '\n '.join(line) + '}')
 
-    def check_input(self, player_y_coordinate: str, player_x_coordinate: str, char: str):
+    def check_input(self, player_y_coordinate: str, player_x_coordinate: str, char: Char):
         try:
             validation_x = player_x_coordinate.isnumeric()
             validation_y = player_y_coordinate.isnumeric()
             num_x = 0 <= int(player_x_coordinate) <= 2
             num_y = 0 <= int(player_y_coordinate) <= 2
-            is_empty = self.game_array[int(player_y_coordinate)][int(player_x_coordinate)] == '_'
+            is_empty = self.game_array[int(player_y_coordinate)][int(player_x_coordinate)] == Char.EMPTY
 
             if not num_x or not num_y:
                 print('Invalid input!')
@@ -35,34 +43,34 @@ class Game:
             print('Invalid input!')
             return False
 
-    def set_move(self, player_y_coordinate: str, player_x_coordinate: str, char: str):
+    def set_move(self, player_y_coordinate: str, player_x_coordinate: str, char: Char):
         validation = self.check_input(player_y_coordinate, player_x_coordinate, char)
 
         while not validation:
-            print(f'Player {char}, please enter your y_coordinate.')
+            print(f'Player {char.value()}, please enter your y_coordinate.')
             player_y_coordinate = input()
-            print(f'Player {char}, please enter your x_coordinate.')
+            print(f'Player {char.value()}, please enter your x_coordinate.')
             player_x_coordinate = input()
             validation = self.check_input(player_y_coordinate, player_x_coordinate, char)
 
     def check_win(self):
         for row in self.game_array:
-            if row.count('O') == 3 or row.count('X') == 3:
-                print(f'Player {row[0]} has won!')
+            if row.count(Char.PLAYER_1) == 3 or row.count(Char.PLAYER_2) == 3:
+                print(f'Player {row[0].value()} has won!')
                 return True
         
         for col in range(3):
             col_values = [self.game_array[i][col] for i in range(3)]
-            if col_values.count('O') == 3 or col_values.count('X') == 3:
-                print(f'Player {col_values[0]} has won!')
+            if col_values.count(Char.PLAYER_1) == 3 or col_values.count(Char.PLAYER_2) == 3:
+                print(f'Player {col_values[0].value()} has won!')
                 return True
         
-        if [self.game_array[i][i] for i in range(3)].count('O') == 3 or [self.game_array[i][i] for i in range(3)].count('X') == 3:
-            print(f'Player {self.game_array[0][0]} has won!')
+        if [self.game_array[i][i] for i in range(3)].count(Char.PLAYER_1) == 3 or [self.game_array[i][i] for i in range(3)].count(Char.PLAYER_2) == 3:
+            print(f'Player {self.game_array[0][0].value()} has won!')
             return True
         
-        if [self.game_array[i][2 - i] for i in range(3)].count('O') == 3 or [self.game_array[i][2 - i] for i in range(3)].count('X') == 3:
-            print(f'Player {self.game_array[0][2]} has won!')
+        if [self.game_array[i][2 - i] for i in range(3)].count(Char.PLAYER_1) == 3 or [self.game_array[i][2 - i] for i in range(3)].count(Char.PLAYER_2) == 3:
+            print(f'Player {self.game_array[0][2].value()} has won!')
             return True
         
         return False
@@ -79,7 +87,7 @@ class Game:
                 print('Game over!')
                 return
             self.turns += 1
-            self.current_player = 'X' if self.current_player == 'O' else 'O'
+            self.current_player = Char.PLAYER_2 if self.current_player == Char.PLAYER_1 else Char.PLAYER_1
 
         print("It's a tie!")
         
